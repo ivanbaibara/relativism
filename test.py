@@ -125,8 +125,6 @@ frame = 100
 t0 = dt * frame
 N_frame = 1000
 
-
-
 xs = np.array([R0 * (0.05 + i / N_frame) for i in range(N_frame)])
 y0 = np.array([asGV.rho(x) for x in xs])
 
