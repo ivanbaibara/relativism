@@ -1,100 +1,14 @@
-from analytic_solution import AnalyticSolutionGV
 import numpy as np
 import matplotlib.pyplot as plt
+from src.utils import compare_density_plots
 
-def compare_density_plots(particle_r_initial, particle_r_final,
-                                   percentile_cut=98, bins=110,
-                                   xn1=None, yn1=None, xn2=None, yn2=None,
-                                   analytical_color1='green', analytical_color2='purple',
-                                   analytical_label1='Аналит. начало', analytical_label2='Аналит. конец',
-                                   analytical_marker='o', analytical_size=30,
-                                   x_lim=None, y_lim=None):
-    # Вычисляем радиусы
-    r_vals_initial = np.sqrt(np.sum(particle_r_initial ** 2, axis=1))
-    r_vals_final = np.sqrt(np.sum(particle_r_final ** 2, axis=1))
-
-    # Разные радиусы отсечения для начального и конечного состояний
-    cutoff_initial = np.percentile(r_vals_initial, percentile_cut)
-    cutoff_final = np.percentile(r_vals_final, percentile_cut)
-
-    # Отсекаем частицы своими порогами
-    mask_initial = r_vals_initial <= cutoff_initial
-    mask_final = r_vals_final <= cutoff_final
-
-    r_filtered_initial = r_vals_initial[mask_initial]
-    r_filtered_final = r_vals_final[mask_final]
-
-    # Собственные столбцы для каждого распределения
-    bin_edges_initial = np.linspace(0, cutoff_initial, bins + 1)
-    bin_edges_final = np.linspace(0, cutoff_final, bins + 1)
-
-    bin_centers_initial = (bin_edges_initial[:-1] + bin_edges_initial[1:]) / 2
-    bin_centers_final = (bin_edges_final[:-1] + bin_edges_final[1:]) / 2
-
-    bin_widths_initial = bin_edges_initial[1:] - bin_edges_initial[:-1]
-    bin_widths_final = bin_edges_final[1:] - bin_edges_final[:-1]
-
-    # Гистограммы
-    counts_initial, _ = np.histogram(r_filtered_initial, bins=bin_edges_initial)
-    counts_final, _ = np.histogram(r_filtered_final, bins=bin_edges_final)
-
-    # Объемы оболочек
-    shell_volumes_initial = 4 * np.pi * bin_centers_initial ** 2 * bin_widths_initial
-    shell_volumes_final = 4 * np.pi * bin_centers_final ** 2 * bin_widths_final
-
-    if shell_volumes_initial[0] == 0 and len(shell_volumes_initial) > 1:
-        shell_volumes_initial[0] = shell_volumes_initial[1]
-    if shell_volumes_final[0] == 0 and len(shell_volumes_final) > 1:
-        shell_volumes_final[0] = shell_volumes_final[1]
-
-    # Плотности массы
-    densities_initial = counts_initial / shell_volumes_initial * M0 / N
-    densities_final = counts_final / shell_volumes_final * M0 / N
-
-    # График с двумя осями X
-    fig, ax1 = plt.subplots(1, 1, figsize=(8, 6))
-
-    # Панель 1: ОТДЕЛЬНЫЕ гистограммы
-    ax1.bar(bin_centers_initial, densities_initial,
-            width=bin_widths_initial * 0.9,
-            alpha=0.7, color='blue', edgecolor='black',
-            label=f'Начало (t={0}c)')
-
-    ax1.bar(bin_centers_final, densities_final,
-            width=bin_widths_final * 0.9,
-            alpha=0.7, color='red', edgecolor='black',
-            label=f'Конец (t={(dt * frames)}c)')
-
-    # Наложение аналитических кривых точками, если предоставлены
-    if xn1 is not None and yn1 is not None:
-        ax1.plot(xn1, yn1, marker=analytical_marker,
-                    color=analytical_color1, linewidth=analytical_size,
-                    label=analytical_label1)
-
-    if xn2 is not None and yn2 is not None:
-        ax1.plot(xn2, yn2, marker=analytical_marker,
-                    color=analytical_color2, linewidth=analytical_size,
-                    label=analytical_label2)
-
-    ax1.set_xlabel('Радиус, r')
-    ax1.set_ylabel('Плотность массы, кг/м³')  # Изменено название оси
-    ax1.set_title(f'Радиальные плотности массы (отсечение {percentile_cut}%)')
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
-
-    if x_lim and y_lim:
-        ax1.set_xlim(x_lim)
-        ax1.set_ylim(y_lim)
-
-    plt.show()
-
-filename = 'solved/20-2-2026_19-15_el_55000.npz'
+filename = 'solved/14-3-2026_22-6_el_25000.npz'
 
 solved_info = np.load(
     filename
 )
 
-# ['N', 'M0', 'R0', 'dt', 'frames', 'sigma', 'm', 'tau']
+# ['N', 'q', 'm', 'R0', 'T0', 'G', 'c', 'dt', 'frames', 'sigma', 'mu', 'tau']
 
 info_keys = solved_info['info_keys']
 info_values = solved_info['info_values']
@@ -103,7 +17,8 @@ data = solved_info['data']
 info = dict(zip(info_keys, info_values))
 
 N = int(info['N'])
-M0 = float(info['M0'])
+Q0 = float(info['q'])
+M0 = float(info['m'])
 R0 = float(info['R0'])
 T0 = float(info['T0'])
 frames = int(info['frames'])
@@ -171,8 +86,8 @@ for i in range(N):
 particles_in_layer = [len(x) for x in particle_in_layer_index]
 
 # show particles count by layers
-#plt.bar([x for x in range(layers_count)], particles_in_layer)
-#plt.show()
+plt.bar([x for x in range(layers_count)], particles_in_layer)
+plt.show()
 
 # step 3 (make lines for average particle r in layer
 layers_trace = [[] for _ in range(layers_count)]
