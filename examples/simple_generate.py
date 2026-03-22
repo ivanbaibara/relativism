@@ -38,6 +38,8 @@ solver.run()
 
 # ------ Save data ------
 ROOT_DIR = Path(__file__).resolve().parent.parent
+data_dir = Path(ROOT_DIR).joinpath('solved')
+data_dir.mkdir(parents=False, exist_ok=True)
 solver.save_data(ROOT_DIR)
 
 # ------ Display results and compare with exact solution ------

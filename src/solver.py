@@ -213,7 +213,7 @@ class Solver:
         info_values = np.array([self.N, self.q, self.m, self.r_max, self.t_max, self.k, self.c, self.dt, self.frames, self.sigma, self.mu, self.tau])
 
         np.savez(
-            f'{directory}/{filename}',
+            f'{directory}/solved/{filename}',
             info_keys=info_keys,
             info_values=info_values,
             data=self.data

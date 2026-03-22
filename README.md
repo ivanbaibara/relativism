@@ -32,9 +32,9 @@ pip install -r requirements.txt
 ## 🚀 Запуск примера
 
 Для начала требуется сгенерировать данные. Этот пример моделирует эволюцию системы, определенного вида (сферическая симметрия, лог-нормальное 
-распределение) для сравнения с теоретическим результатом:
+распределение) для сравнения с теоретическим результатом (требуется запускать из корня проекта):
 ```commandline
-python examples/simple_generate.py
+python -m examples/simple_generate.py
 ```
 
 Далее можно посмотреть эволюцию характеристик данной системы, в конкретном случае будут построены график динамики отдельных сферических слоев со 
@@ -42,12 +42,12 @@ python examples/simple_generate.py
 
 Для этого необходимо указать сгенерированный файл в файле characteristics_analysis.py в строке:
 ```python
-filename = f'{root_dir}/ваш файл .npz'
+filename = f'{root_dir}/solved/ваш файл .npz'
 ```
 
 После этого можно запустить пример:
 ```commandline
-python examples/characteristic_analysis.py
+python -m examples/characteristic_analysis.py
 ```
 
 ## 🌌 Полученная динамика системы
