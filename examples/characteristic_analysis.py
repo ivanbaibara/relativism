@@ -1,11 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from src.utils import compare_density_plots
 from pathlib import Path
 
 
 root_dir = Path(__file__).resolve().parent.parent
-filename = f'{root_dir}/solved/22-3-2026_14-41_el_25000.npz'
+
+filename = f'{root_dir}/22-3-2026_15-39_el_25000.npz'
 
 solved_info = np.load(
     filename

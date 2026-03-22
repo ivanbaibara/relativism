@@ -38,7 +38,14 @@ python examples/simple_generate.py
 ```
 
 Далее можно посмотреть эволюцию характеристик данной системы, в конкретном случае будут построены график динамики отдельных сферических слоев со 
-временем:
+временем.
+
+Для этого необходимо указать сгенерированный файл в файле characteristics_analysis.py в строке:
+```python
+filename = f'{root_dir}/ваш файл .npz'
+```
+
+После этого можно запустить пример:
 ```commandline
 python examples/characteristic_analysis.py
 ```
